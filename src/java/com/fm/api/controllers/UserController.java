@@ -39,10 +39,6 @@ public class UserController {
         
         if(loginResult == true){
             LoginResponse response = new LoginResponse();
-            response.setUsername(userInfo.getUserName());
-            response.setFirstname(userInfo.getFirstName());
-            response.setLastname(userInfo.getLastName());
-            response.setType(userInfo.getType());
             response.setStatus("OK");
             return response;
         }else{
