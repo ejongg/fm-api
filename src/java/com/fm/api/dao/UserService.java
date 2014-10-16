@@ -63,7 +63,7 @@ public class UserService {
                 user.setUserName(rs.getString("userName"));
                 user.setType(rs.getString("type"));
                 user.setFirstName(rs.getString("firstName"));
-                user.setLastName(rs.getString("firstName"));
+                user.setLastName(rs.getString("lastName"));
             }
         }catch(Exception e){
             e.printStackTrace();

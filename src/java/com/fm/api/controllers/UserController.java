@@ -1,6 +1,7 @@
 
 package com.fm.api.controllers;
 
+import com.fm.api.classes.LoginResponse;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +32,24 @@ public class UserController {
     }
     
     @RequestMapping(value="/login", method=RequestMethod.POST)
-    public boolean login(@RequestBody UserLoginCredentials user){
-        return userService.login(user.getUsername(), user.getPassword());
+    public LoginResponse login(@RequestBody UserLoginCredentials user){
+        
+        boolean loginResult = userService.login(user.getUsername(), user.getPassword());
+        User userInfo = userService.getUserByUsername(user.getUsername());
+        
+        if(loginResult == true){
+            LoginResponse response = new LoginResponse();
+            response.setUsername(userInfo.getUserName());
+            response.setFirstname(userInfo.getFirstName());
+            response.setLastname(userInfo.getLastName());
+            response.setType(userInfo.getType());
+            response.setStatus("OK");
+            return response;
+        }else{
+            LoginResponse response = new LoginResponse();
+            response.setStatus("ERROR");
+            response.setToken(null);
+            return response;
+        }
     }
 }
