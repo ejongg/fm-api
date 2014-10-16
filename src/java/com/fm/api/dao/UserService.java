@@ -22,7 +22,6 @@ public class UserService {
                 User user = new User();
                 user.setId(rs.getInt("userId"));
                 user.setUserName(rs.getString("userName"));
-                user.setPassword(rs.getString("password"));
                 user.setType(rs.getString("type"));
                 user.setFirstName(rs.getString("firstName"));
                 user.setLastName(rs.getString("firstName"));
@@ -43,7 +42,6 @@ public class UserService {
             while(rs.next()){
                 user.setId(rs.getInt("userId"));
                 user.setUserName(rs.getString("userName"));
-                user.setPassword(rs.getString("password"));
                 user.setType(rs.getString("type"));
                 user.setFirstName(rs.getString("firstName"));
                 user.setLastName(rs.getString("lastName"));
@@ -63,7 +61,6 @@ public class UserService {
             while(rs.next()){
                 user.setId(rs.getInt("userId"));
                 user.setUserName(rs.getString("userName"));
-                user.setPassword(rs.getString("password"));
                 user.setType(rs.getString("type"));
                 user.setFirstName(rs.getString("firstName"));
                 user.setLastName(rs.getString("firstName"));

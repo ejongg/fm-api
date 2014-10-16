@@ -4,7 +4,6 @@ package com.fm.api.classes;
 public class User {
     private int id;
     private String userName;
-    private String password;
     private String type;
     private String firstName;
     private String lastName;
@@ -23,14 +22,6 @@ public class User {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getType() {
@@ -59,6 +50,6 @@ public class User {
     
     @Override
     public String toString(){
-        return "User[id=" + id + ", username="+ userName + ", password=" + password + ", type="+ type + ", firstname=" + firstName+ ", lastname="+ lastName +"]";
+        return "User[id=" + id + ", username="+ userName +  ", type="+ type + ", firstname=" + firstName+ ", lastname="+ lastName +"]";
     }
 }
