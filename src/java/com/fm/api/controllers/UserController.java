@@ -40,6 +40,10 @@ public class UserController {
         if(loginResult == true){
             LoginResponse response = new LoginResponse();
             response.setStatus("OK");
+            response.setUsername(userInfo.getUserName());
+            response.setFirstname(userInfo.getFirstName());
+            response.setLastname(userInfo.getLastName());
+            response.setType(userInfo.getType());
             return response;
         }else{
             LoginResponse response = new LoginResponse();
