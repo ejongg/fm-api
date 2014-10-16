@@ -12,7 +12,7 @@ import com.fm.api.classes.User;
 import com.fm.api.dao.UserService;
 
 @RestController
-@RequestMapping("service/user")
+@RequestMapping("user")
 public class UserController {
     UserService userService = new UserService();
     
@@ -22,15 +22,9 @@ public class UserController {
       return users;
      }
          
-    @RequestMapping(value="/id/{id}", method=RequestMethod.GET, headers="Accept=application/json")
+    @RequestMapping(value="/{id}", method=RequestMethod.GET, headers="Accept=application/json")
     public User getUserById(@PathVariable int id){
         User user = userService.getUserById(id);
-        return user;
-    }
-    
-    @RequestMapping(value="/username/{username}", method=RequestMethod.GET, headers="Accept=application/json")
-    public User getUserByUsername(@PathVariable String username){
-        User user = userService.getUserByUsername(username);
         return user;
     }
 }
