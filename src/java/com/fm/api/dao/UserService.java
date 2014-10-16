@@ -70,4 +70,19 @@ public class UserService {
         }
         return user;
     }
+    
+    public boolean login(String username, String password){
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * from users where userName='" + username + "'" );
+            while(rs.next()){
+                if(rs.getString("userName").equals(username) && rs.getString("password").equals(password)){
+                    return true;
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

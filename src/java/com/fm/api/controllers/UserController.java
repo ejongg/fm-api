@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fm.api.classes.User;
 import com.fm.api.dao.UserService;
+import com.fm.api.classes.UserLoginCredentials;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("user")
@@ -26,5 +28,10 @@ public class UserController {
     public User getUserById(@PathVariable int id){
         User user = userService.getUserById(id);
         return user;
+    }
+    
+    @RequestMapping(value="/login", method=RequestMethod.POST)
+    public boolean login(@RequestBody UserLoginCredentials user){
+        return userService.login(user.getUsername(), user.getPassword());
     }
 }
