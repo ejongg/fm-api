@@ -41,7 +41,11 @@ public class UserController {
             LoginResponse response = new LoginResponse();
             response.setUser(userInfo);
             response.setToken();
-            response.setStatus("OK");   
+            response.setStatus("OK");
+            
+            //Store token in database
+            userService.setSessionToken(userInfo.getUserName(), userInfo.getToken());
+            
             return response;
         }else{
             LoginResponse response = new LoginResponse();

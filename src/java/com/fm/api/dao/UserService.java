@@ -85,4 +85,14 @@ public class UserService {
         }
         return false;
     }
+    
+    public void setSessionToken(String username, String token){
+        try{
+            String sql = "UPDATE users set token='"+token+"' where userName='"+username+"'";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }
