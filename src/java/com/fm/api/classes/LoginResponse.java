@@ -6,25 +6,9 @@ import java.security.SecureRandom;
 
 public class LoginResponse {
     private SecureRandom random = new SecureRandom();
-    private String token;
+    private User user;
     private String status;
-    private String username;
-    private String firstname;
-    private String lastname;
-    private String type;
     
-    public LoginResponse(){
-        this.token = new BigInteger(130, random).toString(32);
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -32,36 +16,16 @@ public class LoginResponse {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public String getUsername() {
-        return username;
+    
+    public void setUser(User user){
+        this.user = user;
     }
-
-    public void setUsername(String username) {
-        this.username = username;
+    
+    public User getUser(){
+        return user;
     }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    
+    public void setToken(){
+        user.setToken(new BigInteger(130, random).toString(32));
     }
 }

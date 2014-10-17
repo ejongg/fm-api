@@ -7,6 +7,7 @@ public class User {
     private String type;
     private String firstName;
     private String lastName;
+    private String token;
 
     public int getId() {
         return id;
@@ -51,5 +52,13 @@ public class User {
     @Override
     public String toString(){
         return "User[id=" + id + ", username="+ userName +  ", type="+ type + ", firstname=" + firstName+ ", lastname="+ lastName +"]";
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

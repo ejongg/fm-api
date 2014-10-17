@@ -39,16 +39,13 @@ public class UserController {
         
         if(loginResult == true){
             LoginResponse response = new LoginResponse();
-            response.setStatus("OK");
-            response.setUsername(userInfo.getUserName());
-            response.setFirstname(userInfo.getFirstName());
-            response.setLastname(userInfo.getLastName());
-            response.setType(userInfo.getType());
+            response.setUser(userInfo);
+            response.setToken();
+            response.setStatus("OK");   
             return response;
         }else{
             LoginResponse response = new LoginResponse();
             response.setStatus("ERROR");
-            response.setToken(null);
             return response;
         }
     }
