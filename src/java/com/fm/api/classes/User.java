@@ -4,6 +4,7 @@ package com.fm.api.classes;
 public class User {
     private int id;
     private String userName;
+    private String password;
     private String type;
     private String firstName;
     private String lastName;
@@ -60,5 +61,13 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

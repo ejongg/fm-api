@@ -88,11 +88,70 @@ public class UserService {
     
     public void setSessionToken(String username, String token){
         try{
-            String sql = "UPDATE users set token='"+token+"' where userName='"+username+"'";
+            String sql = "UPDATE users set token=? where userName=? ";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, token);
+            statement.setString(2, username);
+            statement.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void destroySessionToken(String username){
+        try{
+            String sql = "UPDATE users set token='' where userName='"+username+"'";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.executeUpdate();
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+    
+    public boolean createUser(User user){
+        try{
+            String sql = "INSERT into users(userName, password, type, firstName, lastName) values (?,?,?,?,?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, user.getUserName());
+            statement.setString(2, user.getPassword());
+            statement.setString(3, user.getType());
+            statement.setString(4, user.getFirstName());
+            statement.setString(5, user.getLastName());
+            statement.execute();
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean editUser(User user){
+        try{
+            String sql = "UPDATE users set password=?, type=?, firstName=?, lastName=? where userName=?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, user.getPassword());
+            statement.setString(2, user.getType());
+            statement.setString(3, user.getFirstName());
+            statement.setString(4, user.getLastName());
+            statement.setString(5, user.getUserName());
+            statement.executeUpdate();
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean deleteUser(String username){
+        try{
+            String sql = "DELETE from users where username=?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.execute();
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 }

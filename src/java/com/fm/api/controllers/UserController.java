@@ -1,8 +1,6 @@
 
 package com.fm.api.controllers;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fm.api.classes.LoginResponse;
 import java.util.List;
 
@@ -54,5 +52,28 @@ public class UserController {
             response.setStatus("ERROR");
             return response;
         }
+    }
+    
+    @RequestMapping(value="/logout", method=RequestMethod.POST)
+    public void logout(@RequestBody String user){
+        userService.destroySessionToken(user);
+    }
+    
+    @RequestMapping(value="/create", method=RequestMethod.POST)
+    public boolean create(@RequestBody User user){
+        boolean isCreated = userService.createUser(user);
+        return isCreated;
+    }
+    
+    @RequestMapping(value="/edit", method=RequestMethod.POST)
+    public boolean edit(@RequestBody User user){
+        boolean isEdited = userService.editUser(user);
+        return isEdited;
+    }
+    
+    @RequestMapping(value="/delete", method=RequestMethod.POST)
+    public boolean delete(@RequestBody String username){
+        boolean isDeleted = userService.deleteUser(username);
+        return isDeleted;
     }
 }
