@@ -17,13 +17,13 @@ public class ProductService {
         List<Product> products = new ArrayList<>();
         try{
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * from coke_prod_names, coke_inventory WHERE coke_prod_names.prod_id = coke_inventory.prod_id");
+            ResultSet rs = statement.executeQuery("SELECT prod_id,prod_name,size,price,logical_count,physical_count from coke_prod_names JOIN coke_inventory USING (prod_id)");
             while(rs.next()){
                 Product product = new Product();
                 product.setId(rs.getInt("prod_id"));
                 product.setName(rs.getString("prod_name"));
                 product.setSize(rs.getString("size"));
-                product.setPrice(rs.getDouble("price"));
+                product.setPrice(rs.getFloat("price"));
                 product.setLogicalCount(rs.getInt("logical_count"));
                 product.setPhysicalCount(rs.getInt("physical_count"));
                 products.add(product);
@@ -38,13 +38,13 @@ public class ProductService {
         Product product = new Product();
         
         try{  
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * from coke_prod_names, coke_inventory WHERE coke_prod_names.prod_id = coke_inventory.prod_id AND coke_inventory.prod_id='"+id+"'");
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * from coke_prod_names JOIN coke_inventory USING ('prod_id') WHERE coke_inventory.prod_id='"+id+"'");
             while(rs.next()){
                 product.setId(rs.getInt("prod_id"));
                 product.setName(rs.getString("prod_name"));
                 product.setSize(rs.getString("size"));
-                product.setPrice(rs.getDouble("price"));
+                product.setPrice(rs.getFloat("price"));
                 product.setLogicalCount(rs.getInt("logical_count"));
                 product.setPhysicalCount(rs.getInt("physical_count"));
             }
@@ -54,22 +54,44 @@ public class ProductService {
         return product;
     }
     
-    public boolean addProduct(Product product){
+    private int addToNames(String name){
+        int last_key = 0;
+        
         try{
             String sql = "INSERT into coke_prod_names (prod_name) values (?)";
-            String sql2 = "INSERT into coke_inventory (size, price, logical_count, physical_count, prod_name) values (?,?,?,?,?)";
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            PreparedStatement stmt2 = connection.prepareStatement(sql2);
-            stmt.setString(1, product.getName());
+            PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, name);
             stmt.execute();
+
+            ResultSet rs = stmt.getGeneratedKeys();
+            while (rs.next()) {
+                last_key = rs.getInt(1);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return last_key;
+    }
+    
+    public boolean addProduct(Product product){
+        try{
+            int last_key = addToNames(product.getName());
+            
+            String sql = "INSERT into coke_inventory (size, price, logical_count, physical_count, prod_id) values (?,?,?,?,?)";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, product.getSize());
+            stmt.setDouble(2, product.getPrice());
+            stmt.setInt(3, product.getLogicalCount());
+            stmt.setInt(4, product.getPhysicalCount());
+            stmt.setInt(5, last_key);
+            stmt.execute();
+            
+            stmt.close();
             stmt.close();
             
-            stmt2.setString(1, product.getSize());
-            stmt2.setDouble(2, product.getPrice());
-            stmt2.setInt(3, product.getLogicalCount());
-            stmt2.setInt(4, product.getPhysicalCount());
-            
-            
+            return true;
+              
         }catch(Exception e){
             e.printStackTrace();
         }

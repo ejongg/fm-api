@@ -16,8 +16,8 @@ public class UserService {
     public List<User> getAllUsers(){
         List<User> users = new ArrayList<>();
         try{
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * from users");
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * from users");
             while(rs.next()){
                 User user = new User();
                 user.setId(rs.getInt("user_id"));
@@ -37,8 +37,8 @@ public class UserService {
         User user = new User();
         
         try{  
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * from users where user_id=" + id);
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * from users where user_id=" + id);
             while(rs.next()){
                 user.setId(rs.getInt("user_id"));
                 user.setUserName(rs.getString("username"));
@@ -56,8 +56,8 @@ public class UserService {
         User user = new User();
         
         try{
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * from users where username='" + username + "'");
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * from users where username='" + username + "'");
             while(rs.next()){
                 user.setId(rs.getInt("user_id"));
                 user.setUserName(rs.getString("username"));
@@ -73,8 +73,8 @@ public class UserService {
     
     public boolean login(String username, String password){
         try{
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * from users where username='" + username + "'" );
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * from users where username='" + username + "'" );
             while(rs.next()){
                 if(rs.getString("username").equals(username) && rs.getString("password").equals(password)){
                     return true;
@@ -89,10 +89,10 @@ public class UserService {
     public void setSessionToken(String username, String token){
         try{
             String sql = "UPDATE users set token=? where username=? ";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, token);
-            statement.setString(2, username);
-            statement.executeUpdate();
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, token);
+            stmt.setString(2, username);
+            stmt.executeUpdate();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -101,9 +101,9 @@ public class UserService {
     public void destroySessionToken(String username){
         try{
             String sql = "UPDATE users set token='' where username=?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, username);
-            statement.executeUpdate();
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, username);
+            stmt.executeUpdate();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -112,13 +112,13 @@ public class UserService {
     public boolean createUser(User user){
         try{
             String sql = "INSERT into users(username, password, type, first_name, last_name) values (?,?,?,?,?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, user.getUserName());
-            statement.setString(2, user.getPassword());
-            statement.setString(3, user.getType());
-            statement.setString(4, user.getFirstName());
-            statement.setString(5, user.getLastName());
-            statement.execute();
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, user.getUserName());
+            stmt.setString(2, user.getPassword());
+            stmt.setString(3, user.getType());
+            stmt.setString(4, user.getFirstName());
+            stmt.setString(5, user.getLastName());
+            stmt.execute();
             return true;
         }catch(Exception e){
             e.printStackTrace();
@@ -129,13 +129,13 @@ public class UserService {
     public boolean editUser(User user){
         try{
             String sql = "UPDATE users set password=?, type=?, first_name=?, last_name=? where username=?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, user.getPassword());
-            statement.setString(2, user.getType());
-            statement.setString(3, user.getFirstName());
-            statement.setString(4, user.getLastName());
-            statement.setString(5, user.getUserName());
-            statement.executeUpdate();
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, user.getPassword());
+            stmt.setString(2, user.getType());
+            stmt.setString(3, user.getFirstName());
+            stmt.setString(4, user.getLastName());
+            stmt.setString(5, user.getUserName());
+            stmt.executeUpdate();
             return true;
         }catch(Exception e){
             e.printStackTrace();
@@ -146,9 +146,9 @@ public class UserService {
     public boolean deleteUser(int id){
         try{
             String sql = "DELETE from users where user_id=?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, id);
-            statement.execute();
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            stmt.execute();
             return true;
         }catch(Exception e){
             e.printStackTrace();

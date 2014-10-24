@@ -29,4 +29,9 @@ public class ProductController {
         return product;
     }
     
+    @RequestMapping(value="/add", method=RequestMethod.POST)
+    public boolean addProduct(@RequestBody Product product){
+        boolean isCreated = productService.addProduct(product);
+        return isCreated;
+    }
 }
