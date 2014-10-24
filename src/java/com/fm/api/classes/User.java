@@ -22,8 +22,8 @@ public class User {
         return username;
     }
 
-    public void setUserName(String userName) {
-        this.username = userName;
+    public void setUserName(String username) {
+        this.username = username;
     }
 
     public String getType() {
@@ -38,16 +38,16 @@ public class User {
         return firstname;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstname = firstName;
+    public void setFirstName(String firstname) {
+        this.firstname = firstname;
     }
 
     public String getLastName() {
         return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastname = lastName;
+    public void setLastName(String lastname) {
+        this.lastname = lastname;
     }
     
     public String getToken() {

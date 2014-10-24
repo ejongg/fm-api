@@ -46,15 +46,15 @@ public class Product {
         return logical_count;
     }
 
-    public void setLogicalCount(int logical_count) {
+    public void setLogical_Count(int logical_count) {
         this.logical_count = logical_count;
     }
 
-    public int getPhysicalCount() {
+    public int getPhysical_Count() {
         return physical_count;
     }
 
-    public void setPhysicalCount(int physical_count) {
+    public void setPhysical_Count(int physical_count) {
         this.physical_count = physical_count;
     }
 }

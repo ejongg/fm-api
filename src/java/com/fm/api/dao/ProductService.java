@@ -24,8 +24,8 @@ public class ProductService {
                 product.setName(rs.getString("prod_name"));
                 product.setSize(rs.getString("size"));
                 product.setPrice(rs.getFloat("price"));
-                product.setLogicalCount(rs.getInt("logical_count"));
-                product.setPhysicalCount(rs.getInt("physical_count"));
+                product.setLogical_Count(rs.getInt("logical_count"));
+                product.setPhysical_Count(rs.getInt("physical_count"));
                 products.add(product);
             }
         }catch(Exception e){
@@ -45,8 +45,8 @@ public class ProductService {
                 product.setName(rs.getString("prod_name"));
                 product.setSize(rs.getString("size"));
                 product.setPrice(rs.getFloat("price"));
-                product.setLogicalCount(rs.getInt("logical_count"));
-                product.setPhysicalCount(rs.getInt("physical_count"));
+                product.setLogical_Count(rs.getInt("logical_count"));
+                product.setPhysical_Count(rs.getInt("physical_count"));
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -83,11 +83,10 @@ public class ProductService {
             stmt.setString(1, product.getSize());
             stmt.setDouble(2, product.getPrice());
             stmt.setInt(3, product.getLogicalCount());
-            stmt.setInt(4, product.getPhysicalCount());
+            stmt.setInt(4, product.getPhysical_Count());
             stmt.setInt(5, last_key);
             stmt.execute();
             
-            stmt.close();
             stmt.close();
             
             return true;
