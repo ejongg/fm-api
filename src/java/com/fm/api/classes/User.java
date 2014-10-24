@@ -3,11 +3,11 @@ package com.fm.api.classes;
 
 public class User {
     private int id;
-    private String userName;
+    private String username;
     private String password;
     private String type;
-    private String firstName;
-    private String lastName;
+    private String firstname;
+    private String lastname;
     private String token;
 
     public int getId() {
@@ -19,11 +19,11 @@ public class User {
     }
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
     }
 
     public String getType() {
@@ -35,26 +35,21 @@ public class User {
     }
 
     public String getFirstName() {
-        return firstName;
+        return firstname;
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstname = firstName;
     }
 
     public String getLastName() {
-        return lastName;
+        return lastname;
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastname = lastName;
     }
     
-    @Override
-    public String toString(){
-        return "User[id=" + id + ", username="+ userName +  ", type="+ type + ", firstname=" + firstName+ ", lastname="+ lastName +"]";
-    }
-
     public String getToken() {
         return token;
     }
@@ -69,5 +64,10 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    @Override
+    public String toString(){
+        return "User[id=" + id + ", username="+ username +  ", type="+ type + ", firstname=" + firstname+ ", lastname="+ lastname +"]";
     }
 }

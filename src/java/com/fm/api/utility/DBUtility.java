@@ -16,7 +16,7 @@ public class DBUtility {
                 String driver = "com.mysql.jdbc.Driver";
                 Class.forName(driver);
                 connection = DriverManager.getConnection
-                    ("jdbc:mysql://localhost:3306/fmmarketing", "root", "");
+                    ("jdbc:mysql://localhost:3306/fm_marketing", "root", "");
             }
             catch(ClassNotFoundException | SQLException e){
                 e.printStackTrace();

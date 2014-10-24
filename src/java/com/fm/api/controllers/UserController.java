@@ -65,15 +65,15 @@ public class UserController {
         return isCreated;
     }
     
-    @RequestMapping(value="/edit", method=RequestMethod.POST)
+    @RequestMapping(value="/edit", method=RequestMethod.PUT)
     public boolean edit(@RequestBody User user){
         boolean isEdited = userService.editUser(user);
         return isEdited;
     }
     
-    @RequestMapping(value="/delete", method=RequestMethod.POST)
-    public boolean delete(@RequestBody String username){
-        boolean isDeleted = userService.deleteUser(username);
+    @RequestMapping(value="/delete/{id}", method=RequestMethod.DELETE)
+    public boolean delete(@PathVariable int id){
+        boolean isDeleted = userService.deleteUser(id);
         return isDeleted;
     }
 }

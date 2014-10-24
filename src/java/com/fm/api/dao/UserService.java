@@ -20,11 +20,11 @@ public class UserService {
             ResultSet rs = statement.executeQuery("SELECT * from users");
             while(rs.next()){
                 User user = new User();
-                user.setId(rs.getInt("userId"));
-                user.setUserName(rs.getString("userName"));
+                user.setId(rs.getInt("user_id"));
+                user.setUserName(rs.getString("username"));
                 user.setType(rs.getString("type"));
-                user.setFirstName(rs.getString("firstName"));
-                user.setLastName(rs.getString("firstName"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
                 users.add(user);
             }
         }catch(Exception e){
@@ -38,13 +38,13 @@ public class UserService {
         
         try{  
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * from users where userId=" + id);
+            ResultSet rs = statement.executeQuery("SELECT * from users where user_id=" + id);
             while(rs.next()){
-                user.setId(rs.getInt("userId"));
-                user.setUserName(rs.getString("userName"));
+                user.setId(rs.getInt("user_id"));
+                user.setUserName(rs.getString("username"));
                 user.setType(rs.getString("type"));
-                user.setFirstName(rs.getString("firstName"));
-                user.setLastName(rs.getString("lastName"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -57,13 +57,13 @@ public class UserService {
         
         try{
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * from users where userName='" + username + "'");
+            ResultSet rs = statement.executeQuery("SELECT * from users where username='" + username + "'");
             while(rs.next()){
-                user.setId(rs.getInt("userId"));
-                user.setUserName(rs.getString("userName"));
+                user.setId(rs.getInt("user_id"));
+                user.setUserName(rs.getString("username"));
                 user.setType(rs.getString("type"));
-                user.setFirstName(rs.getString("firstName"));
-                user.setLastName(rs.getString("lastName"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -74,9 +74,9 @@ public class UserService {
     public boolean login(String username, String password){
         try{
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * from users where userName='" + username + "'" );
+            ResultSet rs = statement.executeQuery("SELECT * from users where username='" + username + "'" );
             while(rs.next()){
-                if(rs.getString("userName").equals(username) && rs.getString("password").equals(password)){
+                if(rs.getString("username").equals(username) && rs.getString("password").equals(password)){
                     return true;
                 }
             }
@@ -88,7 +88,7 @@ public class UserService {
     
     public void setSessionToken(String username, String token){
         try{
-            String sql = "UPDATE users set token=? where userName=? ";
+            String sql = "UPDATE users set token=? where username=? ";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, token);
             statement.setString(2, username);
@@ -100,8 +100,9 @@ public class UserService {
     
     public void destroySessionToken(String username){
         try{
-            String sql = "UPDATE users set token='' where userName='"+username+"'";
+            String sql = "UPDATE users set token='' where username=?";
             PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
             statement.executeUpdate();
         }catch(Exception e){
             e.printStackTrace();
@@ -110,7 +111,7 @@ public class UserService {
     
     public boolean createUser(User user){
         try{
-            String sql = "INSERT into users(userName, password, type, firstName, lastName) values (?,?,?,?,?)";
+            String sql = "INSERT into users(username, password, type, first_name, last_name) values (?,?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, user.getUserName());
             statement.setString(2, user.getPassword());
@@ -127,7 +128,7 @@ public class UserService {
     
     public boolean editUser(User user){
         try{
-            String sql = "UPDATE users set password=?, type=?, firstName=?, lastName=? where userName=?";
+            String sql = "UPDATE users set password=?, type=?, first_name=?, last_name=? where username=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, user.getPassword());
             statement.setString(2, user.getType());
@@ -142,11 +143,11 @@ public class UserService {
         return false;
     }
     
-    public boolean deleteUser(String username){
+    public boolean deleteUser(int id){
         try{
-            String sql = "DELETE from users where username=?";
+            String sql = "DELETE from users where user_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, username);
+            statement.setInt(1, id);
             statement.execute();
             return true;
         }catch(Exception e){
