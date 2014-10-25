@@ -42,7 +42,7 @@ public class Product {
         this.price = price;
     }
 
-    public int getLogicalCount() {
+    public int getLogical_Count() {
         return logical_count;
     }
 

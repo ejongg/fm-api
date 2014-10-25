@@ -13,11 +13,29 @@ public class ProductService {
         connection = DBUtility.getConnection();
     }
     
-    public List<Product> getAllProducts(){
+    private String[] chooseTable(String brand){
+        String[] tables = new String[2];
+        switch (brand) {
+            case "coca-cola":
+                tables[0] = "coke_prod_names";
+                tables[1] = "coke_inventory";
+                break;
+            case "beer":
+                tables[0] = "beer_prod_names";
+                tables[1] = "beer_inventory";
+                break;
+        }
+        return tables;
+    }
+    
+    public List<Product> getAllProducts(String brand){
         List<Product> products = new ArrayList<>();
         try{
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT prod_id,prod_name,size,price,logical_count,physical_count from coke_prod_names JOIN coke_inventory USING (prod_id)");
+            String[] tables = chooseTable(brand);
+            String sql = "SELECT prod_id,prod_name,size,price,logical_count,physical_count from "+ tables[0] + " JOIN " + tables[1] + " USING (prod_id)";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 Product product = new Product();
                 product.setId(rs.getInt("prod_id"));
@@ -34,12 +52,15 @@ public class ProductService {
         return products;
     }
     
-    public Product getProductById(int id){
+    public Product getProductById(int id, String brand){
         Product product = new Product();
         
-        try{  
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * from coke_prod_names JOIN coke_inventory USING (prod_id) WHERE coke_inventory.prod_id='"+id+"'");
+        try{ 
+            String[] tables = chooseTable(brand);
+            String sql = "SELECT * from "+ tables[0] +" JOIN "+ tables[1] +" USING (prod_id) WHERE coke_inventory.prod_id= ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 product.setId(rs.getInt("prod_id"));
                 product.setName(rs.getString("prod_name"));
@@ -56,15 +77,8 @@ public class ProductService {
     
     public boolean addProduct(String name, String brand){
         try{
-            String sql="";
-            switch(brand){
-                case "coca-cola":
-                    sql = "INSERT into coke_prod_names (prod_name) values (?)";
-                    break;
-                case "beer":
-                    sql = "INSERT into beer_prod_names (prod_name) values (?)";
-                    break;
-            }
+            String[] tables = chooseTable(brand);
+            String sql="INSERT into "+ tables[0] + " (prod_name) values (?)";
             
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, name);
@@ -78,13 +92,14 @@ public class ProductService {
         return false;
     }
     
-    public boolean addProductVariant(Product product){
+    public boolean addProductVariant(Product product, String brand){
         try{
-            String sql = "INSERT into coke_inventory (size, price, logical_count, physical_count, prod_id) values (?,?,?,?,?)";
+            String[] tables = chooseTable(brand);
+            String sql = "INSERT into "+ tables[1] + " (size, price, logical_count, physical_count, prod_id) values (?,?,?,?,?)";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, product.getSize());
             stmt.setDouble(2, product.getPrice());
-            stmt.setInt(3, product.getLogicalCount());
+            stmt.setInt(3, product.getLogical_Count());
             stmt.setInt(4, product.getPhysical_Count());
             stmt.setInt(5, product.getId());
             stmt.execute();
@@ -97,9 +112,10 @@ public class ProductService {
         return false;
     }
     
-    public boolean deleteProduct(int id){
+    public boolean deleteProduct(int id, String brand){
         try{
-            String sql = "DELETE from coke_prod_names WHERE prod_id= ?";
+            String[] tables = chooseTable(brand);
+            String sql = "DELETE from "+ tables[0] +" WHERE prod_id= ?";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, id);
             stmt.execute();
