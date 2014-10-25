@@ -34,4 +34,10 @@ public class ProductController {
         boolean isCreated = productService.addProduct(product);
         return isCreated;
     }
+    
+    @RequestMapping(value="/delete/{id}", method=RequestMethod.DELETE)
+    public boolean deleteProduct(@PathVariable int id){
+        boolean isDeleted = productService.deleteProduct(id);
+        return isDeleted;
+    }
 }

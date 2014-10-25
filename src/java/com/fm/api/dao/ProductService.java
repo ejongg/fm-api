@@ -99,4 +99,21 @@ public class ProductService {
         }
         return false;
     }
+    
+    public boolean deleteProduct(int id){
+        try{
+            String sql = "DELETE from coke_prod_names WHERE prod_id= ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            stmt.execute();
+            
+            stmt.close();
+            return true;
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return false;
+    }
 }
