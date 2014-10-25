@@ -39,7 +39,7 @@ public class ProductService {
         
         try{  
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * from coke_prod_names JOIN coke_inventory USING ('prod_id') WHERE coke_inventory.prod_id='"+id+"'");
+            ResultSet rs = stmt.executeQuery("SELECT * from coke_prod_names JOIN coke_inventory USING (prod_id) WHERE coke_inventory.prod_id='"+id+"'");
             while(rs.next()){
                 product.setId(rs.getInt("prod_id"));
                 product.setName(rs.getString("prod_name"));
@@ -78,19 +78,22 @@ public class ProductService {
         try{
             int last_key = addToNames(product.getName());
             
-            String sql = "INSERT into coke_inventory (size, price, logical_count, physical_count, prod_id) values (?,?,?,?,?)";
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, product.getSize());
-            stmt.setDouble(2, product.getPrice());
-            stmt.setInt(3, product.getLogicalCount());
-            stmt.setInt(4, product.getPhysical_Count());
-            stmt.setInt(5, last_key);
-            stmt.execute();
-            
-            stmt.close();
-            
-            return true;
-              
+            if(last_key == 0){
+                return false;
+            }else{
+                String sql = "INSERT into coke_inventory (size, price, logical_count, physical_count, prod_id) values (?,?,?,?,?)";
+                PreparedStatement stmt = connection.prepareStatement(sql);
+                stmt.setString(1, product.getSize());
+                stmt.setDouble(2, product.getPrice());
+                stmt.setInt(3, product.getLogicalCount());
+                stmt.setInt(4, product.getPhysical_Count());
+                stmt.setInt(5, last_key);
+                stmt.execute();
+
+                stmt.close();
+
+                return true;
+            }    
         }catch(Exception e){
             e.printStackTrace();
         }
