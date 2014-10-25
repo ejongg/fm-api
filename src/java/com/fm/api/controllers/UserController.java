@@ -15,7 +15,7 @@ import com.fm.api.classes.UserLoginCredentials;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("users")
 public class UserController {
     UserService userService = new UserService();
     

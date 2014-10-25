@@ -54,46 +54,43 @@ public class ProductService {
         return product;
     }
     
-    private int addToNames(String name){
-        int last_key = 0;
-        
+    public boolean addProduct(String name, String brand){
         try{
-            String sql = "INSERT into coke_prod_names (prod_name) values (?)";
-            PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            String sql="";
+            switch(brand){
+                case "coca-cola":
+                    sql = "INSERT into coke_prod_names (prod_name) values (?)";
+                    break;
+                case "beer":
+                    sql = "INSERT into beer_prod_names (prod_name) values (?)";
+                    break;
+            }
+            
+            PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.execute();
 
-            ResultSet rs = stmt.getGeneratedKeys();
-            while (rs.next()) {
-                last_key = rs.getInt(1);
-            }
+            stmt.close();
+            return true;
         }catch(Exception e){
             e.printStackTrace();
         }
-        
-        return last_key;
+        return false;
     }
     
-    public boolean addProduct(Product product){
+    public boolean addProductVariant(Product product){
         try{
-            int last_key = addToNames(product.getName());
-            
-            if(last_key == 0){
-                return false;
-            }else{
-                String sql = "INSERT into coke_inventory (size, price, logical_count, physical_count, prod_id) values (?,?,?,?,?)";
-                PreparedStatement stmt = connection.prepareStatement(sql);
-                stmt.setString(1, product.getSize());
-                stmt.setDouble(2, product.getPrice());
-                stmt.setInt(3, product.getLogicalCount());
-                stmt.setInt(4, product.getPhysical_Count());
-                stmt.setInt(5, last_key);
-                stmt.execute();
+            String sql = "INSERT into coke_inventory (size, price, logical_count, physical_count, prod_id) values (?,?,?,?,?)";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, product.getSize());
+            stmt.setDouble(2, product.getPrice());
+            stmt.setInt(3, product.getLogicalCount());
+            stmt.setInt(4, product.getPhysical_Count());
+            stmt.setInt(5, product.getId());
+            stmt.execute();
+            stmt.close();
 
-                stmt.close();
-
-                return true;
-            }    
+            return true;  
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -112,8 +109,37 @@ public class ProductService {
             
         }catch(Exception e){
             e.printStackTrace();
+        }  
+        return false;
+    }
+    
+    public boolean editProductName(int id, String name){
+        try{
+            String sql = "UPDATE coke_prod_names set prod_name=? where prod_id=?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, name);
+            stmt.setInt(2, id);
+            stmt.executeUpdate();
+            stmt.close();
+            return true;
+        }catch(Exception e){
+            
         }
-        
+        return false;
+    }
+    
+    public boolean deleteProductVariant(int id, String size){
+        try{
+            String sql = "DELETE from coke_inventory where prod_id=? AND size=?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            stmt.setString(2, size);
+            stmt.execute();
+            stmt.close();
+            return true;
+        }catch(Exception e){
+            
+        }
         return false;
     }
 }
