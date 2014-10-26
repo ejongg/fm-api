@@ -74,10 +74,12 @@ public class UserService {
     
     public boolean login(String username, String password){
         try{
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * from users where username='" + username + "'" );
+            String sql = "SELECT * from users where username=?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
             while(rs.next()){
-                if(rs.getString("username").equals(username) && rs.getString("password").equals(password)){
+                if(rs.getString("username").equals(username) && BCrypt.checkpw(password, rs.getString("password"))){
                     return true;
                 }
             }
