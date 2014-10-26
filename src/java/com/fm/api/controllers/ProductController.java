@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.fm.api.classes.Product;
 import com.fm.api.dao.ProductService;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("products/{brand}")
@@ -56,16 +57,21 @@ public class ProductController {
         return isDeleted;
     }
     
-    // Currently working on the functions below this comment
+    // Use this to edit a product name.
     @RequestMapping(value="/edit/{id}", method=RequestMethod.PUT)
-    public boolean editProduct(@RequestBody String name, @PathVariable int id){
-        boolean isEdited = productService.editProductName(id, name);
+    public boolean editProduct(@RequestBody String name,@PathVariable String brand, @PathVariable int id){
+        boolean isEdited = productService.editProductName(id, name, brand);
         return isEdited;
     }
     
+    
+    /*
+        Use this to delete a variant of a product.
+        Example: /delete/variant/1?size=1L
+    */
     @RequestMapping(value="/delete/variant/{id}", method=RequestMethod.DELETE)
-    public boolean deleteVariant(@RequestBody String size, @PathVariable int id){
-        boolean isDeleted = productService.deleteProductVariant(id, size);
+    public boolean deleteVariant(@PathVariable String brand, @PathVariable int id, @RequestParam(value="size", required=false) String size){
+        boolean isDeleted = productService.deleteProductVariant(id, size, brand);
         return isDeleted;
     }
 }

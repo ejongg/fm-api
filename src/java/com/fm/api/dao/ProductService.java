@@ -129,9 +129,10 @@ public class ProductService {
         return false;
     }
     
-    public boolean editProductName(int id, String name){
+    public boolean editProductName(int id, String name, String brand){
         try{
-            String sql = "UPDATE coke_prod_names set prod_name=? where prod_id=?";
+            String[] tables = chooseTable(brand);
+            String sql = "UPDATE "+ tables[0] +" set prod_name=? where prod_id=?";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setInt(2, id);
@@ -144,9 +145,10 @@ public class ProductService {
         return false;
     }
     
-    public boolean deleteProductVariant(int id, String size){
+    public boolean deleteProductVariant(int id, String size, String brand){
         try{
-            String sql = "DELETE from coke_inventory where prod_id=? AND size=?";
+            String[] tables = chooseTable(brand);
+            String sql = "DELETE from " + tables[1] + " where prod_id=? AND size=?";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, id);
             stmt.setString(2, size);
