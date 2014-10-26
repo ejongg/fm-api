@@ -60,15 +60,28 @@ public class UserController {
     }
     
     @RequestMapping(value="/create", method=RequestMethod.POST)
-    public boolean create(@RequestBody User user){
-        boolean isCreated = userService.createUser(user);
-        return isCreated;
+    public User create(@RequestBody User user){
+        User createdUser = userService.createUser(user);
+        return createdUser;
     }
     
+    /*
+        Use this method to change user details.
+    */
     @RequestMapping(value="/edit", method=RequestMethod.PUT)
-    public boolean edit(@RequestBody User user){
-        boolean isEdited = userService.editUser(user);
-        return isEdited;
+    public User edit(@RequestBody User user){
+        User updatedUser = userService.editUser(user);
+        return updatedUser;
+    }
+    
+    /*
+        Use this to change the password of user.
+        Just send a string (oldPassword,newPassword)
+    */
+    @RequestMapping(value="/edit/password/{id}", method=RequestMethod.PUT)
+    public boolean changePassword(@RequestBody String passwords, @PathVariable int id){
+        boolean isChanged = userService.changePassword(id, passwords);
+        return isChanged;
     }
     
     @RequestMapping(value="/delete/{id}", method=RequestMethod.DELETE)

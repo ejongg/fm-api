@@ -31,22 +31,13 @@ public class ProductController {
         return product;
     }
     
-    // Use this to add a new product
+    /*
+        Use this to add a new product.
+        Send a string in the request body. Example : Mogu-mogu
+    */
     @RequestMapping(value="/add", method=RequestMethod.POST)
     public boolean addProduct(@RequestBody String product, @PathVariable String brand){
         boolean isCreated = productService.addProduct(product, brand);
-        return isCreated;
-    }
-    
-    /*
-        Use this to add a new variant(size) of a product *Note* Supply the id of the product.
-        Example:
-            if the id of Coke in coke_prod_names table is 1.
-            Send along the data the id 1.
-    */
-    @RequestMapping(value="/add/variant", method=RequestMethod.POST)
-    public boolean addProductVariant(@RequestBody Product product, @PathVariable String brand){
-        boolean isCreated = productService.addProductVariant(product, brand);
         return isCreated;
     }
     
@@ -57,13 +48,35 @@ public class ProductController {
         return isDeleted;
     }
     
-    // Use this to edit a product name.
+    /*
+        Use this to edit a product name.
+        Just send a string in the request body.
+    */
     @RequestMapping(value="/edit/{id}", method=RequestMethod.PUT)
     public boolean editProduct(@RequestBody String name,@PathVariable String brand, @PathVariable int id){
         boolean isEdited = productService.editProductName(id, name, brand);
         return isEdited;
     }
     
+    /*
+     Use this to add a new variant(size) of a product *Note* Supply the id of the product.
+     Example:
+     if the id of Coke in coke_prod_names table is 1.
+     Send along the data the id 1.
+    
+     {
+        "id" : 1,
+        "size" : "1L",
+        "price" : 30,
+        "logical_Count" : 50,
+        "physical_Count" : 50
+     }
+     */
+    @RequestMapping(value = "/add/variant", method = RequestMethod.POST)
+    public boolean addProductVariant(@RequestBody Product product, @PathVariable String brand) {
+        boolean isCreated = productService.addProductVariant(product, brand);
+        return isCreated;
+    }
     
     /*
         Use this to delete a variant of a product.
@@ -73,5 +86,11 @@ public class ProductController {
     public boolean deleteVariant(@PathVariable String brand, @PathVariable int id, @RequestParam(value="size", required=false) String size){
         boolean isDeleted = productService.deleteProductVariant(id, size, brand);
         return isDeleted;
+    }
+    
+    @RequestMapping(value="/edit/variant", method=RequestMethod.PUT)
+    public boolean editVariant(@PathVariable String brand, @RequestBody Product product){
+        boolean isEdited = productService.editProductVariant(product, brand);
+        return isEdited;
     }
 }

@@ -43,6 +43,7 @@ public class UserService {
             while(rs.next()){
                 user.setId(rs.getInt("user_id"));
                 user.setUserName(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
                 user.setType(rs.getString("type"));
                 user.setFirstName(rs.getString("first_name"));
                 user.setLastName(rs.getString("last_name"));
@@ -112,7 +113,8 @@ public class UserService {
         }
     }
     
-    public boolean createUser(User user){
+    public User createUser(User user){
+        User createdUser = user;
         try{
             String sql = "INSERT into users(username, password, type, first_name, last_name) values (?,?,?,?,?)";
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -125,28 +127,31 @@ public class UserService {
             stmt.setString(4, user.getFirstName());
             stmt.setString(5, user.getLastName());
             stmt.execute();
-            return true;
+            
+            createdUser = getUserByUsername(user.getUserName());
         }catch(Exception e){
             e.printStackTrace();
         }
-        return false;
+        return createdUser;
     }
     
-    public boolean editUser(User user){
+    public User editUser(User user){
+        User updatedUser = user;
         try{
-            String sql = "UPDATE users set password=?, type=?, first_name=?, last_name=? where username=?";
+            String sql = "UPDATE users set type=?, first_name=?, last_name=? where username=?";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, user.getPassword());
-            stmt.setString(2, user.getType());
-            stmt.setString(3, user.getFirstName());
-            stmt.setString(4, user.getLastName());
-            stmt.setString(5, user.getUserName());
+               
+            stmt.setString(1, user.getType());
+            stmt.setString(2, user.getFirstName());
+            stmt.setString(3, user.getLastName());
+            stmt.setString(4, user.getUserName());
             stmt.executeUpdate();
-            return true;
+            
+            updatedUser = getUserByUsername(user.getUserName());
         }catch(Exception e){
             e.printStackTrace();
         }
-        return false;
+        return updatedUser;
     }
     
     public boolean deleteUser(int id){
@@ -158,6 +163,31 @@ public class UserService {
             return true;
         }catch(Exception e){
             e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean changePassword(int id, String passwords){
+        try{
+            String[] password = passwords.split(",");
+            String oldPassword = password[0].trim();
+            String newPassword = password[1].trim();
+            
+            User user = getUserById(id);
+            
+            if(BCrypt.checkpw(oldPassword, user.getPassword())){
+                
+                String hashedpw = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+                
+                String sql = "UPDATE users set password=? where user_id=?";
+                PreparedStatement stmt = connection.prepareStatement(sql);
+                stmt.setString(1, hashedpw);
+                stmt.setInt(2, id);
+                stmt.executeUpdate();
+                return true;
+            }
+        }catch(Exception e){
+            
         }
         return false;
     }
