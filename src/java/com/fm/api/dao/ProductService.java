@@ -92,26 +92,6 @@ public class ProductService {
         return false;
     }
     
-    public boolean addProductVariant(Product product, String brand){
-        try{
-            String[] tables = chooseTable(brand);
-            String sql = "INSERT into "+ tables[1] + " (size, price, logical_count, physical_count, prod_id) values (?,?,?,?,?)";
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, product.getSize());
-            stmt.setDouble(2, product.getPrice());
-            stmt.setInt(3, product.getLogical_Count());
-            stmt.setInt(4, product.getPhysical_Count());
-            stmt.setInt(5, product.getId());
-            stmt.execute();
-            stmt.close();
-
-            return true;  
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return false;
-    }
-    
     public boolean deleteProduct(int id, String brand){
         try{
             String[] tables = chooseTable(brand);
@@ -129,9 +109,10 @@ public class ProductService {
         return false;
     }
     
-    public boolean editProductName(int id, String name){
+    public boolean editProductName(int id, String name, String brand){
         try{
-            String sql = "UPDATE coke_prod_names set prod_name=? where prod_id=?";
+            String[] tables = chooseTable(brand);
+            String sql = "UPDATE "+ tables[0] +" set prod_name=? where prod_id=?";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setInt(2, id);
@@ -144,15 +125,53 @@ public class ProductService {
         return false;
     }
     
-    public boolean deleteProductVariant(int id, String size){
+    public boolean addProductVariant(Product product, String brand) {
+        try {
+            String[] tables = chooseTable(brand);
+            String sql = "INSERT into " + tables[1] + " (size, price, logical_count, physical_count, prod_id) values (?,?,?,?,?)";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, product.getSize());
+            stmt.setDouble(2, product.getPrice());
+            stmt.setInt(3, product.getLogical_Count());
+            stmt.setInt(4, product.getPhysical_Count());
+            stmt.setInt(5, product.getId());
+            stmt.execute();
+            stmt.close();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean deleteProductVariant(int id, String size, String brand){
         try{
-            String sql = "DELETE from coke_inventory where prod_id=? AND size=?";
+            String[] tables = chooseTable(brand);
+            String sql = "DELETE from " + tables[1] + " where prod_id=? AND size=?";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, id);
             stmt.setString(2, size);
             stmt.execute();
             stmt.close();
             return true;
+        }catch(Exception e){
+            
+        }
+        return false;
+    }
+    
+    public boolean editProductVariant(Product product, String brand){
+        try{
+            String[] tables = chooseTable(brand);
+            String sql = "UPDATE "+ tables[1] + " set price=?, logical_count=?, physical_count=? where prod_id=? AND size=?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setDouble(1, product.getPrice());
+            stmt.setInt(2, product.getLogical_Count());
+            stmt.setInt(3, product.getPhysical_Count());
+            stmt.setInt(4, product.getId());
+            stmt.setString(5, product.getSize());
+            stmt.executeUpdate();
         }catch(Exception e){
             
         }
