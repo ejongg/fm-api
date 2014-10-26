@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.*;
 import com.fm.api.classes.User;
 import com.fm.api.utility.DBUtility;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class UserService {
     private Connection connection;
@@ -113,8 +114,11 @@ public class UserService {
         try{
             String sql = "INSERT into users(username, password, type, first_name, last_name) values (?,?,?,?,?)";
             PreparedStatement stmt = connection.prepareStatement(sql);
+            
+            String hashedpw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+            
             stmt.setString(1, user.getUserName());
-            stmt.setString(2, user.getPassword());
+            stmt.setString(2, hashedpw);
             stmt.setString(3, user.getType());
             stmt.setString(4, user.getFirstName());
             stmt.setString(5, user.getLastName());
