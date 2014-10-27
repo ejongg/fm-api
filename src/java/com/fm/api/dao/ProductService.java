@@ -164,14 +164,16 @@ public class ProductService {
     public boolean editProductVariant(Product product, String brand){
         try{
             String[] tables = chooseTable(brand);
-            String sql = "UPDATE "+ tables[1] + " set price=?, logical_count=?, physical_count=? where prod_id=? AND size=?";
+            String sql = "UPDATE "+ tables[1] + " set price=?, logical_count=?, physical_count=? where size=? and prod_id=?";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setDouble(1, product.getPrice());
             stmt.setInt(2, product.getLogical_Count());
             stmt.setInt(3, product.getPhysical_Count());
-            stmt.setInt(4, product.getId());
-            stmt.setString(5, product.getSize());
+            stmt.setString(4, product.getSize());
+            stmt.setInt(5, product.getId());
             stmt.executeUpdate();
+            
+            return true;
         }catch(Exception e){
             
         }
