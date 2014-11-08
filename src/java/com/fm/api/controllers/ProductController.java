@@ -1,6 +1,7 @@
 
 package com.fm.api.controllers;
 
+import com.fm.api.classes.InventoryProduct;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -14,67 +15,75 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("products/{brand}")
+@RequestMapping("products")
 public class ProductController {
     ProductService productService = new ProductService();
     
     @RequestMapping(method = RequestMethod.GET,headers="Accept=application/json")
-     public List<Product> getAllProducts(@PathVariable String brand) {
+    public List<Product> getAllProducts(@PathVariable String brand) {
       List<Product> products = productService.getAllProducts(brand);
       return products;
     }
     
     // Use this to search for a specific product
     @RequestMapping(value="/{id}", method=RequestMethod.GET, headers="Accept=application/json")
-    public Product getUserById(@PathVariable String brand, @PathVariable int id){
-        Product product = productService.getProductById(id, brand);
+    public Product getUserById(@PathVariable int id){
+        Product product = productService.getProductById(id);
         return product;
     }
     
     /*
         Use this to add a new product.
-        Send a string in the request body. Example : Mogu-mogu
+        Note: Product names are unique.
+        {
+            "name" : "Coke",
+            "brand" : "Coca-Cola"
+        }
     */
     @RequestMapping(value="/add", method=RequestMethod.POST)
-    public boolean addProduct(@RequestBody String product, @PathVariable String brand){
-        boolean isCreated = productService.addProduct(product, brand);
+    public boolean addProduct(@RequestBody Product product){
+        boolean isCreated = productService.addProduct(product.getName(), product.getBrand());
         return isCreated;
     }
     
-    // Use this to delete a product. *Caution* When a product is deleted, all of its variant is also deleted
+    /*
+        Use this to delete a product. 
+        Caution: When a product is deleted, all of its variant is also deleted.
+    */ 
     @RequestMapping(value="/delete/{id}", method=RequestMethod.DELETE)
-    public boolean deleteProduct(@PathVariable String brand, @PathVariable int id){
-        boolean isDeleted = productService.deleteProduct(id, brand);
+    public boolean deleteProduct(@PathVariable int id){
+        boolean isDeleted = productService.deleteProduct(id);
         return isDeleted;
     }
     
     /*
         Use this to edit a product name.
-        Just send a string in the request body.
+        {
+            "id" : "1",
+            "name" : "Coke",
+            "brand" : "SMB"
+        }
     */
-    @RequestMapping(value="/edit/{id}", method=RequestMethod.PUT)
-    public boolean editProduct(@RequestBody String name,@PathVariable String brand, @PathVariable int id){
-        boolean isEdited = productService.editProductName(id, name, brand);
+    @RequestMapping(value="/edit", method=RequestMethod.PUT)
+    public boolean editProduct(@RequestBody Product product){
+        boolean isEdited = productService.editProductName(product.getId(), product.getName(), product.getBrand());
         return isEdited;
     }
     
     /*
-     Use this to add a new variant(size) of a product *Note* Supply the id of the product.
-     Example:
-     if the id of Coke in coke_prod_names table is 1.
-     Send along the data the id 1.
-    
-     {
-        "id" : 1,
-        "size" : "1L",
-        "price" : 30,
-        "logical_Count" : 50,
-        "physical_Count" : 50
-     }
+        {
+            "id" : 1,
+            "size" : "1L",
+            "price" : 25.00,
+            "bottles" : 500,
+            "cases" : 3000,
+            "lifespan" : 6,
+            "expiration" : "5/8/2015"
+        }
      */
-    @RequestMapping(value = "/add/variant", method = RequestMethod.POST)
-    public boolean addProductVariant(@RequestBody Product product, @PathVariable String brand) {
-        boolean isCreated = productService.addProductVariant(product, brand);
+    @RequestMapping(value = "/add/order", method = RequestMethod.POST)
+    public boolean addProductVariant(@RequestBody InventoryProduct product) {
+        boolean isCreated = productService.addOrder(product);
         return isCreated;
     }
     

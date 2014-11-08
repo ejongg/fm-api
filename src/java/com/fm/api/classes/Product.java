@@ -7,8 +7,10 @@ public class Product {
     private String name;
     private String size;
     private double price;
-    private int logical_count;
-    private int physical_count;
+    private int bottles;
+    private int cases;
+    private String brand;
+    private int lifespan; // Lifespan in months 
 
     public int getId() {
         return id;
@@ -42,19 +44,36 @@ public class Product {
         this.price = price;
     }
 
-    public int getLogical_Count() {
-        return logical_count;
+    public int getBottles() {
+        return bottles;
     }
 
-    public void setLogical_Count(int logical_count) {
-        this.logical_count = logical_count;
+    public void setBottles(int bottles) {
+        this.bottles = bottles;
     }
 
-    public int getPhysical_Count() {
-        return physical_count;
+    public int getCases() {
+        return cases;
     }
 
-    public void setPhysical_Count(int physical_count) {
-        this.physical_count = physical_count;
+    public void setCases(int cases) {
+        this.cases = cases;
     }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public int getLifespan() {
+        return lifespan;
+    }
+
+    public void setLifespan(int lifespan) {
+        this.lifespan = lifespan;
+    }
+
 }
