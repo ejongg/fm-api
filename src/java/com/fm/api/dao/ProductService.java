@@ -250,27 +250,5 @@ public class ProductService {
             
         }
         return false;
-    }
-    
-    private boolean checkProductDetailsTable(int prod_id, String size){
-        try{
-            int exist = 0;
-            String sql = "SELECT exists (select * from product_details where prod_id=? and size=?) as exist";
-            PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, prod_id);
-            stmt.setString(2, size);
-            ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
-                exist = rs.getInt("exist");
-            }
-            
-            if(exist == 1){
-                return true;
-            }
-        }catch(Exception e){
-            
-        }
-        return false;
-    }
-    
+    }   
 }
