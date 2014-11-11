@@ -99,7 +99,7 @@ public class ProductController {
             "expiration" : "01/01/2015"
         }
      */
-    @RequestMapping(value = "/replenish", method = RequestMethod.POST)
+    @RequestMapping(value = "/replenish", method = RequestMethod.PUT)
     public Product replenish(@RequestBody InventoryProduct product) {
         Product prod = productService.replenish(product);
         return prod;

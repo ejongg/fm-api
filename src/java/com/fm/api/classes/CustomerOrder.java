@@ -7,7 +7,6 @@ public class CustomerOrder {
     private String owner;
     private String delivery_date;
     private String order_date;
-    private int transaction_id;
 
     public int getId() {
         return id;
@@ -47,13 +46,5 @@ public class CustomerOrder {
 
     public void setOrder_date(String order_date) {
         this.order_date = order_date;
-    }
-
-    public int getTransaction_id() {
-        return transaction_id;
-    }
-
-    public void setTransaction_id(int transaction_id) {
-        this.transaction_id = transaction_id;
     }
 }
