@@ -25,6 +25,12 @@ public class ProductController {
       return products;
     }
     
+    @RequestMapping(value="/list",method=RequestMethod.GET)
+    public List<Product> getProductList(){
+        List<Product> products = productService.getProductList();
+        return products;
+    }
+     
     // Use this to search for a specific product
     @RequestMapping(value="/{id}", method=RequestMethod.GET)
     public Product getUserById(@PathVariable int id){

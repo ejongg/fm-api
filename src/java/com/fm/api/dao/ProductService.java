@@ -93,6 +93,26 @@ public class ProductService {
         return null;
     }
     
+    public List<Product> getProductList(){
+        List<Product> products = new ArrayList<>();
+        try{
+            String sql = "SELECT * from products";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                Product product = new Product();
+                product.setName(rs.getString("prod_name"));
+                product.setBrand(rs.getString("brand"));
+                products.add(product);
+            }
+            stmt.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return products;
+    }
+    
     public Product addProduct(String name, String brand){
         try{
             String sql="INSERT into products (prod_name, brand) values (?,?)";
