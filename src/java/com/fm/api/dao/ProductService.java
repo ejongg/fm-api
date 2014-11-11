@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.ArrayList;
 import com.fm.api.classes.Product;
+import com.fm.api.classes.ProductInfo;
 import com.fm.api.utility.DBUtility;
 import java.sql.Statement;
 
@@ -93,17 +94,18 @@ public class ProductService {
         return null;
     }
     
-    public List<Product> getProductList(){
-        List<Product> products = new ArrayList<>();
+    public List<ProductInfo> getProductList(){
+        List<ProductInfo> products = new ArrayList<>();
         try{
             String sql = "SELECT * from products";
             PreparedStatement stmt = connection.prepareStatement(sql);
 
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
-                Product product = new Product();
+                ProductInfo product = new ProductInfo();
                 product.setName(rs.getString("prod_name"));
                 product.setBrand(rs.getString("brand"));
+                product.setId(rs.getInt("prod_id"));
                 products.add(product);
             }
             stmt.close();

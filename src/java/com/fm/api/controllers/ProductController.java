@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fm.api.classes.Product;
+import com.fm.api.classes.ProductInfo;
 import com.fm.api.dao.ProductService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,8 +27,8 @@ public class ProductController {
     }
     
     @RequestMapping(value="/list",method=RequestMethod.GET)
-    public List<Product> getProductList(){
-        List<Product> products = productService.getProductList();
+    public List<ProductInfo> getProductList(){
+        List<ProductInfo> products = productService.getProductList();
         return products;
     }
      
