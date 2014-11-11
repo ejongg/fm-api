@@ -2,16 +2,16 @@
 package com.fm.api.classes;
 
 public class ProductInfo {
-    private int id;
+    private int prod_id;
     private String name;
     private String brand;
 
-    public int getId() {
-        return id;
+    public int getProd_Id() {
+        return prod_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setProd_Id(int id) {
+        this.prod_id = id;
     }
 
     public String getName() {

@@ -13,7 +13,6 @@ import com.fm.api.classes.Product;
 import com.fm.api.classes.ProductInfo;
 import com.fm.api.dao.ProductService;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("products")
@@ -22,8 +21,8 @@ public class ProductController {
     
     @RequestMapping(method = RequestMethod.GET)
     public List<Product> getAllProducts() {
-      List<Product> products = productService.getAllProducts();
-      return products;
+        List<Product> products = productService.getAllProducts();
+        return products;
     }
     
     @RequestMapping(value="/list",method=RequestMethod.GET)
@@ -102,8 +101,22 @@ public class ProductController {
         }
      */
     @RequestMapping(value = "/replenish", method = RequestMethod.POST)
-    public boolean addProductVariant(@RequestBody InventoryProduct product) {
+    public boolean replenish(@RequestBody InventoryProduct product) {
         boolean isCreated = productService.replenish(product);
         return isCreated;
+    }
+    
+    /*
+        {
+            "prod_Id" : 1,
+            "size" : "1L",
+            "price" : 25.00,
+            "lifespan" : 6
+        }
+    */
+    @RequestMapping(value="/add/variant", method=RequestMethod.POST)
+    public Product addProductVariant(@RequestBody Product product){
+        Product prod = productService.addProductVariant(product);
+        return prod;
     }
 }
