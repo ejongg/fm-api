@@ -105,7 +105,7 @@ public class ProductService {
                 ProductInfo product = new ProductInfo();
                 product.setName(rs.getString("prod_name"));
                 product.setBrand(rs.getString("brand"));
-                product.setId(rs.getInt("prod_id"));
+                product.setProd_Id(rs.getInt("prod_id"));
                 products.add(product);
             }
             stmt.close();
@@ -188,19 +188,9 @@ public class ProductService {
             */
             addToInventory(product);
             
-            /*
-                Check if product details if the product already exist.
-                If not it adds a new record in the product_details table.
-                If yes it updates the record.
-            */ 
-            //boolean checkVariant = checkProductDetailsTable(product.getProd_Id(), product.getSize());
-            if(product.getId() == 0){
-                System.out.println(product.getId());
-                addProductVariant(product);
-            }else{
-                Product oldProductCount = getProductById(product.getId());
-                updateProductCount(product, oldProductCount);
-            }
+            Product oldProductCount = getProductById(product.getId());
+            updateProductCount(product, oldProductCount);
+            
             return true;
         }catch(Exception e){
             
@@ -225,10 +215,10 @@ public class ProductService {
         }
     }
     
-    public boolean addProductVariant(Product product) {
+    public Product addProductVariant(Product product) {
         try {
             String sql = "INSERT into product_details (prod_id,bottles,cases,size,price,lifespan) VALUES (?,?,?,?,?,?)";
-            PreparedStatement stmt = connection.prepareStatement(sql);
+            PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, product.getProd_Id());
             stmt.setInt(2, product.getBottles());
             stmt.setInt(3, product.getCases());
@@ -236,15 +226,25 @@ public class ProductService {
             stmt.setDouble(5, product.getPrice());
             stmt.setInt(6, product.getLifespan());
             stmt.execute();
-            return true;
+            
+            ResultSet generatedKey = stmt.getGeneratedKeys();
+            
+            if(generatedKey.next()){
+                Product prod = getProductById(generatedKey.getInt(1));
+                return prod;
+            }
+            
+            stmt.close();
+            
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
         }
+        return null;
     }
     
     public Product editProductDetails(Product product){
         try{
-            String sql = "UPDATE product_details set price=?, lifespan=? where details_id=?";
+            String sql = "UPDATE product_details set price=?, lifespan=?  where details_id=?";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setDouble(1, product.getPrice());
             stmt.setInt(2, product.getLifespan());
