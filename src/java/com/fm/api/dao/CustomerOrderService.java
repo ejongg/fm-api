@@ -2,14 +2,11 @@
 package com.fm.api.dao;
 
 import com.fm.api.classes.CustomerOrder;
-import com.fm.api.classes.InventoryProduct;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.ArrayList;
-import com.fm.api.classes.Product;
-import com.fm.api.classes.ProductInfo;
 import com.fm.api.utility.DBUtility;
 import java.sql.Statement;
 
@@ -31,6 +28,7 @@ public class CustomerOrderService {
                 order.setOwner(rs.getString("owner_name"));
                 order.setDelivery_date(rs.getString("delivery_date"));
                 order.setOrder_date(rs.getString("order_date"));
+                order.setStatus(rs.getString("status"));
                 orders.add(order);
             }
             stmt.close();
@@ -53,7 +51,8 @@ public class CustomerOrderService {
                 order.setEstablishment(rs.getString("establishment_name"));
                 order.setOwner(rs.getString("owner_name"));
                 order.setDelivery_date(rs.getString("delivery_date"));
-                order.setOrder_date(rs.getString("order_date")); 
+                order.setOrder_date(rs.getString("order_date"));
+                order.setStatus(rs.getString("status"));
             }
             
             stmt.close();
@@ -66,8 +65,12 @@ public class CustomerOrderService {
     
     public CustomerOrder addOrder(CustomerOrder order){
         try{
-            String sql = "INSERT into cust_orders (establishment_name,owner_name,delivery_date,order_date) values (?,?,?,?)";
+            String sql = "INSERT into cust_orders (establishment_name,owner_name,delivery_date,order_date,status) values (?,?,?,?, 'Pending')";
             PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, order.getEstablishment());
+            stmt.setString(2, order.getOwner());
+            stmt.setString(3, order.getDelivery_date());
+            stmt.setString(4, order.getOrder_date());
             stmt.execute();
             
             ResultSet generatedKey = stmt.getGeneratedKeys();
@@ -79,6 +82,40 @@ public class CustomerOrderService {
             
             stmt.close();
 
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public CustomerOrder cancelOrder(int id){
+        try{
+            String sql = "UPDATE cust_orders set status=? where cust_order_id=?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, "Cancelled");
+            stmt.setInt(2, id);
+            stmt.executeUpdate();
+            stmt.close();
+            
+            CustomerOrder order = getOrderById(id);
+            return order;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public CustomerOrder markOrderComplete(int id){
+        try{
+            String sql = "UPDATE cust_orders set status=? where cust_order_id=?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, "Delivered");
+            stmt.setInt(2, id);
+            stmt.executeUpdate();
+            stmt.close();
+            
+            CustomerOrder order = getOrderById(id);
+            return order;
         }catch(Exception e){
             e.printStackTrace();
         }
