@@ -216,30 +216,55 @@ public class ProductService {
     }
     
     public Product addProductVariant(Product product) {
-        try {
-            String sql = "INSERT into product_details (prod_id,bottles,cases,size,price,lifespan) VALUES (?,?,?,?,?,?)";
-            PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            stmt.setInt(1, product.getProd_Id());
-            stmt.setInt(2, product.getBottles());
-            stmt.setInt(3, product.getCases());
-            stmt.setString(4, product.getSize());
-            stmt.setDouble(5, product.getPrice());
-            stmt.setInt(6, product.getLifespan());
-            stmt.execute();
+       
+            boolean exists = checkIfExist(product.getBrand(), product.getSize());
             
-            ResultSet generatedKey = stmt.getGeneratedKeys();
-            
-            if(generatedKey.next()){
-                Product prod = getProductById(generatedKey.getInt(1));
-                return prod;
+            if(exists == false){
+                try {
+                    String sql = "INSERT into product_details (prod_id,bottles,cases,size,price,lifespan) VALUES (?,?,?,?,?,?)";
+                    PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                    stmt.setInt(1, product.getProd_Id());
+                    stmt.setInt(2, product.getBottles());
+                    stmt.setInt(3, product.getCases());
+                    stmt.setString(4, product.getSize());
+                    stmt.setDouble(5, product.getPrice());
+                    stmt.setInt(6, product.getLifespan());
+                    stmt.execute();
+
+                    ResultSet generatedKey = stmt.getGeneratedKeys();
+
+                    if (generatedKey.next()) {
+                        Product prod = getProductById(generatedKey.getInt(1));
+                        return prod;
+                    }
+
+                    stmt.close();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+        
+        return null;
+    }
+    
+    private boolean checkIfExist(String brand, String size){
+        try{
+            String sql = "Select exists (select 1 from product_details join products using(prod_id) where size=? and brand=?) as exist";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, size);
+            stmt.setString(2, brand);
+            ResultSet rs = stmt.executeQuery();
             
-            stmt.close();
-            
-        } catch (Exception e) {
+            if(rs.getInt("exist") == 1){
+                return true;
+            }else{
+                return false;
+            }
+        }catch(Exception e){
             e.printStackTrace();
         }
-        return null;
+        return false;
     }
     
     public Product editProductDetails(Product product){
