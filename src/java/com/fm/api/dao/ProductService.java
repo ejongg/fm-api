@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.ArrayList;
 import com.fm.api.classes.Product;
 import com.fm.api.utility.DBUtility;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Statement;
 
 public class ProductService {
     private Connection connection;
@@ -73,21 +71,46 @@ public class ProductService {
         return product;
     }
     
-    public Product addProduct(String name, String brand){
+    private Product getProductName(int id){
         Product product = new Product();
-        
+        try{
+            String sql = "SELECT * from products where prod_id=?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                product.setProd_Id(rs.getInt("prod_id"));
+                product.setName(rs.getString("prod_name"));
+                product.setBrand(rs.getString("brand"));
+            }
+            
+            stmt.close();
+            return product;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public Product addProduct(String name, String brand){
         try{
             String sql="INSERT into products (prod_name, brand) values (?,?)";
             
-            PreparedStatement stmt = connection.prepareStatement(sql);
+            PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, name);
             stmt.setString(2, brand);
             stmt.execute();
-            stmt.close();
             
-            product.setName(name);
-            product.setBrand(brand);
-            return product;
+            ResultSet generatedKey = stmt.getGeneratedKeys();
+            
+            if(generatedKey.next()){
+                Product prod = getProductName(generatedKey.getInt(1));
+                return prod;
+            }
+            
+            stmt.close();
+
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -111,26 +134,25 @@ public class ProductService {
     }
     
     public Product editProductName(int id, String name, String brand){
-        Product product = new Product();
         try{
             String sql = "UPDATE products set prod_name=?, brand=? where prod_id=?";
-            PreparedStatement stmt = connection.prepareStatement(sql);
+            PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, name);
             stmt.setString(2, brand);
             stmt.setInt(3, id);
             stmt.executeUpdate();
-            stmt.close();
             
-            product.setName(name);
-            product.setBrand(brand);
-            return product;
+            Product prod = getProductName(id);
+
+            stmt.close();
+            return prod;
         }catch(Exception e){
             
         }
         return null;
     }
     
-    public boolean addOrder(InventoryProduct product){
+    public boolean replenish(InventoryProduct product){
         try{
             String sql = "INSERT into orders (prod_id,bottles,cases,date_received) VALUES (?,?,?, now())";
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -197,6 +219,23 @@ public class ProductService {
         }
     }
     
+    public Product editProductDetails(Product product){
+        try{
+            String sql = "UPDATE product_details set price=?, lifespan=? where details_id=?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setDouble(1, product.getPrice());
+            stmt.setInt(2, product.getLifespan());
+            stmt.setInt(3, product.getId());
+            stmt.executeUpdate();
+            
+            Product prod = getProductById(product.getId());
+            return prod;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
     private boolean updateProductCount(Product newProducts, Product product){
         try{
             String sql = "UPDATE product_details set cases=?, bottles=? WHERE prod_id=? AND size=?";
@@ -234,21 +273,4 @@ public class ProductService {
         return false;
     }
     
-    public boolean deleteProductVariant(int id, String size, String brand){
-        try{
-            return true;
-        }catch(Exception e){
-            
-        }
-        return false;
-    }
-    
-    public boolean editProductVariant(Product product, String brand){
-        try{
-            return true;
-        }catch(Exception e){
-            
-        }
-        return false;
-    }
 }

@@ -73,6 +73,19 @@ public class ProductController {
     /*
         {
             "id" : 1,
+            "price" : 26.50,
+            "lifespan" : 8
+        }
+    */
+    @RequestMapping(value="/edit/details", method=RequestMethod.PUT)
+    public Product editProductDetails(@RequestBody Product product){
+        Product prod = productService.editProductDetails(product);
+        return prod;
+    }
+    
+    /*
+        {
+            "prod_Id" : 1,
             "size" : "1L",
             "price" : 25.00,
             "bottles" : 500,
@@ -81,9 +94,9 @@ public class ProductController {
             "expiration" : "5/8/2015"
         }
      */
-    @RequestMapping(value = "/add/order", method = RequestMethod.POST)
+    @RequestMapping(value = "/replenish", method = RequestMethod.POST)
     public boolean addProductVariant(@RequestBody InventoryProduct product) {
-        boolean isCreated = productService.addOrder(product);
+        boolean isCreated = productService.replenish(product);
         return isCreated;
     }
 }
