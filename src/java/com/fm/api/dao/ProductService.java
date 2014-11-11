@@ -32,6 +32,7 @@ public class ProductService {
                 product.setId(rs.getInt("details_id"));
                 product.setProd_Id(rs.getInt("prod_id"));
                 product.setName(rs.getString("prod_name"));
+                product.setBrand(rs.getString("brand"));
                 product.setSize(rs.getString("size"));
                 product.setBottles(rs.getInt("bottles"));
                 product.setCases(rs.getInt("cases"));
@@ -49,7 +50,7 @@ public class ProductService {
     public Product getProductById(int id){
         Product product = new Product();  
         try{ 
-            String sql = "SELECT * from products JOIN product_details USING (prod_id) WHERE details_id ?";
+            String sql = "SELECT * from products JOIN product_details USING (prod_id) WHERE details_id=?";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -57,6 +58,7 @@ public class ProductService {
                 product.setId(rs.getInt("details_id"));
                 product.setProd_Id(rs.getInt("prod_id"));
                 product.setName(rs.getString("prod_name"));
+                product.setBrand(rs.getString("brand"));
                 product.setSize(rs.getString("size"));
                 product.setBottles(rs.getInt("bottles"));
                 product.setCases(rs.getInt("cases"));
@@ -132,7 +134,7 @@ public class ProductService {
         try{
             String sql = "INSERT into orders (prod_id,bottles,cases,date_received) VALUES (?,?,?, now())";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, product.getId());
+            stmt.setInt(1, product.getProd_Id());
             stmt.setInt(2, product.getBottles());
             stmt.setInt(3, product.getCases());
             stmt.execute();             
@@ -147,11 +149,11 @@ public class ProductService {
                 If not it adds a new record in the product_details table.
                 If yes it updates the record.
             */ 
-            boolean checkVariant = checkProductDetailsTable(product.getId(), product.getSize());
+            boolean checkVariant = checkProductDetailsTable(product.getProd_Id(), product.getSize());
             if(checkVariant == false){
                 addProductVariant(product);
             }else{
-                Product oldProductCount = getProductById(product.getId());
+                Product oldProductCount = getProductById(product.getProd_Id());
                 updateProductCount(product, oldProductCount);
             }
             return true;
@@ -165,7 +167,7 @@ public class ProductService {
         try{
             String sql = "INSERT into inventory (prod_id,bottles,cases,size,exp_date,age) VALUES (?,?,?,?,?,?)";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, product.getId());
+            stmt.setInt(1, product.getProd_Id());
             stmt.setInt(2, product.getBottles());
             stmt.setInt(3, product.getCases());
             stmt.setString(4, product.getSize());
@@ -182,7 +184,7 @@ public class ProductService {
         try {
             String sql = "INSERT into product_details (prod_id,bottles,cases,size,price,lifespan) VALUES (?,?,?,?,?,?)";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setInt(1, product.getId());
+            stmt.setInt(1, product.getProd_Id());
             stmt.setInt(2, product.getBottles());
             stmt.setInt(3, product.getCases());
             stmt.setString(4, product.getSize());
