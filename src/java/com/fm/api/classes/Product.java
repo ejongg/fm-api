@@ -4,6 +4,7 @@ package com.fm.api.classes;
 
 public class Product {
     private int id;
+    private int prod_id;
     private String name;
     private String size;
     private double price;
@@ -18,6 +19,14 @@ public class Product {
 
     public void setId(int id) {
         this.id = id;
+    }
+    
+    public int getProd_Id(){
+        return prod_id;
+    }
+    
+    public void setProd_Id(int prod_id){
+        this.prod_id = prod_id;
     }
 
     public String getName() {

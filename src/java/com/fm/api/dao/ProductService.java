@@ -20,7 +20,7 @@ public class ProductService {
         connection = DBUtility.getConnection();
     }
     
-    public List<Product> getAllProducts(String brand){
+    public List<Product> getAllProducts(){
         List<Product> products = new ArrayList<>();
         try{
             String sql = "SELECT * from products JOIN product_details USING (prod_id)";
@@ -29,7 +29,8 @@ public class ProductService {
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
                 Product product = new Product();
-                product.setId(rs.getInt("prod_id"));
+                product.setId(rs.getInt("details_id"));
+                product.setProd_Id(rs.getInt("prod_id"));
                 product.setName(rs.getString("prod_name"));
                 product.setSize(rs.getString("size"));
                 product.setBottles(rs.getInt("bottles"));
@@ -48,12 +49,13 @@ public class ProductService {
     public Product getProductById(int id){
         Product product = new Product();  
         try{ 
-            String sql = "SELECT * from products JOIN product_details USING (prod_id) WHERE products.prod_id= ?";
+            String sql = "SELECT * from products JOIN product_details USING (prod_id) WHERE details_id ?";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             while(rs.next()){
-                product.setId(rs.getInt("prod_id"));
+                product.setId(rs.getInt("details_id"));
+                product.setProd_Id(rs.getInt("prod_id"));
                 product.setName(rs.getString("prod_name"));
                 product.setSize(rs.getString("size"));
                 product.setBottles(rs.getInt("bottles"));
@@ -69,7 +71,9 @@ public class ProductService {
         return product;
     }
     
-    public boolean addProduct(String name, String brand){
+    public Product addProduct(String name, String brand){
+        Product product = new Product();
+        
         try{
             String sql="INSERT into products (prod_name, brand) values (?,?)";
             
@@ -77,13 +81,15 @@ public class ProductService {
             stmt.setString(1, name);
             stmt.setString(2, brand);
             stmt.execute();
-
             stmt.close();
-            return true;
+            
+            product.setName(name);
+            product.setBrand(brand);
+            return product;
         }catch(Exception e){
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
     
     public boolean deleteProduct(int id){
@@ -102,7 +108,8 @@ public class ProductService {
         return false;
     }
     
-    public boolean editProductName(int id, String name, String brand){
+    public Product editProductName(int id, String name, String brand){
+        Product product = new Product();
         try{
             String sql = "UPDATE products set prod_name=?, brand=? where prod_id=?";
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -111,11 +118,14 @@ public class ProductService {
             stmt.setInt(3, id);
             stmt.executeUpdate();
             stmt.close();
-            return true;
+            
+            product.setName(name);
+            product.setBrand(brand);
+            return product;
         }catch(Exception e){
             
         }
-        return false;
+        return null;
     }
     
     public boolean addOrder(InventoryProduct product){
@@ -126,7 +136,6 @@ public class ProductService {
             stmt.setInt(2, product.getBottles());
             stmt.setInt(3, product.getCases());
             stmt.execute();             
-            
             
             /*
                 Adds the new order in the inventory table

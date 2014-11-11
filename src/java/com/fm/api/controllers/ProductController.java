@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ProductController {
     ProductService productService = new ProductService();
     
-    @RequestMapping(method = RequestMethod.GET,headers="Accept=application/json")
-    public List<Product> getAllProducts(@PathVariable String brand) {
-      List<Product> products = productService.getAllProducts(brand);
+    @RequestMapping(method = RequestMethod.GET)
+    public List<Product> getAllProducts() {
+      List<Product> products = productService.getAllProducts();
       return products;
     }
     
     // Use this to search for a specific product
-    @RequestMapping(value="/{id}", method=RequestMethod.GET, headers="Accept=application/json")
+    @RequestMapping(value="/{id}", method=RequestMethod.GET)
     public Product getUserById(@PathVariable int id){
         Product product = productService.getProductById(id);
         return product;
@@ -41,9 +41,9 @@ public class ProductController {
         }
     */
     @RequestMapping(value="/add", method=RequestMethod.POST)
-    public boolean addProduct(@RequestBody Product product){
-        boolean isCreated = productService.addProduct(product.getName(), product.getBrand());
-        return isCreated;
+    public Product addProduct(@RequestBody Product product){
+        Product prod = productService.addProduct(product.getName(), product.getBrand());
+        return prod;
     }
     
     /*
@@ -59,15 +59,15 @@ public class ProductController {
     /*
         Use this to edit a product name.
         {
-            "id" : "1",
+            "prod_Id" : "1",
             "name" : "Coke",
             "brand" : "SMB"
         }
     */
     @RequestMapping(value="/edit", method=RequestMethod.PUT)
-    public boolean editProduct(@RequestBody Product product){
-        boolean isEdited = productService.editProductName(product.getId(), product.getName(), product.getBrand());
-        return isEdited;
+    public Product editProduct(@RequestBody Product product){
+        Product prod = productService.editProductName(product.getProd_Id(), product.getName(), product.getBrand());
+        return prod;
     }
     
     /*
@@ -85,21 +85,5 @@ public class ProductController {
     public boolean addProductVariant(@RequestBody InventoryProduct product) {
         boolean isCreated = productService.addOrder(product);
         return isCreated;
-    }
-    
-    /*
-        Use this to delete a variant of a product.
-        Example: /delete/variant/1?size=1L
-    */
-    @RequestMapping(value="/delete/variant/{id}", method=RequestMethod.DELETE)
-    public boolean deleteVariant(@PathVariable String brand, @PathVariable int id, @RequestParam(value="size", required=false) String size){
-        boolean isDeleted = productService.deleteProductVariant(id, size, brand);
-        return isDeleted;
-    }
-    
-    @RequestMapping(value="/edit/variant", method=RequestMethod.PUT)
-    public boolean editVariant(@PathVariable String brand, @RequestBody Product product){
-        boolean isEdited = productService.editProductVariant(product, brand);
-        return isEdited;
     }
 }
