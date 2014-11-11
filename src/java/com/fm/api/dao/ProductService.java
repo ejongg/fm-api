@@ -98,8 +98,8 @@ public class ProductService {
             String sql="INSERT into products (prod_name, brand) values (?,?)";
             
             PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, name);
-            stmt.setString(2, brand);
+            stmt.setString(1, name.trim());
+            stmt.setString(2, brand.trim());
             stmt.execute();
             
             ResultSet generatedKey = stmt.getGeneratedKeys();
@@ -137,8 +137,8 @@ public class ProductService {
         try{
             String sql = "UPDATE products set prod_name=?, brand=? where prod_id=?";
             PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, name);
-            stmt.setString(2, brand);
+            stmt.setString(1, name.trim());
+            stmt.setString(2, brand.trim());
             stmt.setInt(3, id);
             stmt.executeUpdate();
             
@@ -171,11 +171,12 @@ public class ProductService {
                 If not it adds a new record in the product_details table.
                 If yes it updates the record.
             */ 
-            boolean checkVariant = checkProductDetailsTable(product.getProd_Id(), product.getSize());
-            if(checkVariant == false){
+            //boolean checkVariant = checkProductDetailsTable(product.getProd_Id(), product.getSize());
+            if(product.getId() == 0){
+                System.out.println(product.getId());
                 addProductVariant(product);
             }else{
-                Product oldProductCount = getProductById(product.getProd_Id());
+                Product oldProductCount = getProductById(product.getId());
                 updateProductCount(product, oldProductCount);
             }
             return true;
@@ -238,12 +239,11 @@ public class ProductService {
     
     private boolean updateProductCount(Product newProducts, Product product){
         try{
-            String sql = "UPDATE product_details set cases=?, bottles=? WHERE prod_id=? AND size=?";
+            String sql = "UPDATE product_details set cases=?, bottles=? WHERE details_id=?";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, product.getCases() + newProducts.getCases());
             stmt.setInt(2, product.getBottles() + newProducts.getBottles());
             stmt.setInt(3, product.getId());
-            stmt.setString(4, product.getSize());
             stmt.executeUpdate();
             return true;
         }catch(Exception e){
