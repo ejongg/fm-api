@@ -91,19 +91,18 @@ public class ProductController {
     
     /*
         {
+            "id" : 1,
             "prod_Id" : 1,
             "size" : "1L",
-            "price" : 25.00,
-            "bottles" : 500,
-            "cases" : 3000,
-            "lifespan" : 6,
-            "expiration" : "5/8/2015"
+            "bottles" : 6000,
+            "cases" : 500,
+            "expiration" : "01/01/2015"
         }
      */
     @RequestMapping(value = "/replenish", method = RequestMethod.POST)
-    public boolean replenish(@RequestBody InventoryProduct product) {
-        boolean isCreated = productService.replenish(product);
-        return isCreated;
+    public Product replenish(@RequestBody InventoryProduct product) {
+        Product prod = productService.replenish(product);
+        return prod;
     }
     
     /*

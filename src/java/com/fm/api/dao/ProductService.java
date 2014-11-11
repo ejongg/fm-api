@@ -174,13 +174,14 @@ public class ProductService {
         return null;
     }
     
-    public boolean replenish(InventoryProduct product){
+    public Product replenish(InventoryProduct product){
         try{
-            String sql = "INSERT into orders (prod_id,bottles,cases,date_received) VALUES (?,?,?, now())";
+            String sql = "INSERT into orders (prod_id,bottles,cases,size,date_received) VALUES (?,?,?,?,now())";
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, product.getProd_Id());
             stmt.setInt(2, product.getBottles());
             stmt.setInt(3, product.getCases());
+            stmt.setString(4, product.getSize());
             stmt.execute();             
             
             /*
@@ -191,11 +192,12 @@ public class ProductService {
             Product oldProductCount = getProductById(product.getId());
             updateProductCount(product, oldProductCount);
             
-            return true;
+            Product prod = getProductById(product.getId());
+            return prod;
         }catch(Exception e){
             
         }
-        return false;
+        return null;
     }
     
     public void addToInventory(InventoryProduct product){
