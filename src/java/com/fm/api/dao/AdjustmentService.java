@@ -32,6 +32,7 @@ public class AdjustmentService {
                 bo.setPrice(rs.getDouble("price"));
                 bo.setExpense(rs.getDouble("expense"));
                 bo.setDate(rs.getString("date"));
+                bo.setStatus(rs.getString("status"));
                 badOrders.add(bo);
             }
             
@@ -58,6 +59,7 @@ public class AdjustmentService {
                 badOrder.setPrice(rs.getDouble("price"));
                 badOrder.setExpense(rs.getDouble("expense"));
                 badOrder.setDate(rs.getString("date"));
+                badOrder.setStatus(rs.getString("status"));
             }
 
             stmt.close();
@@ -70,7 +72,7 @@ public class AdjustmentService {
     
    public BadOrder addBadOrder(BadOrder bo){
        try{
-           String sql = "INSERT into adjustments (prod_name,size,brand,bottles,price,expense,date) values (?,?,?,?,?,?,?)";
+           String sql = "INSERT into adjustments (prod_name,size,brand,bottles,price,expense,date,status) values (?,?,?,?,?,?,?,?)";
            PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
            stmt.setString(1, bo.getName());
            stmt.setString(2, bo.getSize());
@@ -79,6 +81,7 @@ public class AdjustmentService {
            stmt.setDouble(5, bo.getPrice());
            stmt.setDouble(6, bo.getExpense());
            stmt.setString(7, bo.getDate());
+           stmt.setString(8, "valid");
            
            stmt.execute();
            
@@ -94,4 +97,24 @@ public class AdjustmentService {
        }
        return null;
    }
+   
+   public BadOrder voidBadOrderEntry(int id){
+       try{
+           String sql = "UPDATE adjustments set status=? where adj_id=?";
+           PreparedStatement stmt = connection.prepareStatement(sql);
+           stmt.setString(1, "void");
+           stmt.setInt(2, id);
+           
+           stmt.executeUpdate();
+           
+           BadOrder bo = getBadOrderById(id);
+           
+           stmt.close();
+           return bo;
+       }catch(Exception e){
+           e.printStackTrace();
+       }
+       return null;
+   }
+   
 }

@@ -10,6 +10,7 @@ public class BadOrder {
     private Double price;
     private Double expense;
     private String date;
+    private String status;
 
     public int getId() {
         return id;
@@ -73,5 +74,13 @@ public class BadOrder {
 
     public void setBottles(int bottles) {
         this.bottles = bottles;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

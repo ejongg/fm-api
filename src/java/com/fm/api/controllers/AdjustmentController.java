@@ -45,4 +45,10 @@ public class AdjustmentController {
         BadOrder bo = adjustmentService.addBadOrder(badOrder);
         return bo;
     }
+    
+    @RequestMapping(value="/void/{id}", method=RequestMethod.PUT)
+    public BadOrder voidEntry(@PathVariable int id){
+        BadOrder bo = adjustmentService.voidBadOrderEntry(id);
+        return bo;
+    }
 }
