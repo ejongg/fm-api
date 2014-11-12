@@ -2,6 +2,7 @@
 package com.fm.api.dao;
 
 import com.fm.api.classes.InventoryProduct;
+import com.fm.api.classes.Order;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -113,6 +114,62 @@ public class ProductService {
             e.printStackTrace();
         }
         return products;
+    }
+    
+    public List<InventoryProduct> getInventory(){
+        List<InventoryProduct> inventoryList = new ArrayList<>();
+        try{
+            String sql = "SELECT * from products join inventory using (prod_id)";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                InventoryProduct product = new InventoryProduct();
+                product.setId(rs.getInt("inv_id"));
+                product.setProd_Id(rs.getInt("prod_id"));
+                product.setName(rs.getString("prod_name"));
+                product.setBrand(rs.getString("brand"));
+                product.setBottles(rs.getInt("bottles"));
+                product.setCases(rs.getInt("cases"));
+                product.setSize(rs.getString("size"));
+                product.setExpiration(rs.getString("exp_date"));
+                product.setAge(rs.getInt("age"));
+                inventoryList.add(product);
+            }
+            stmt.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return inventoryList;
+    }
+    
+    public List<Order> getAllOrders(){
+        List<Order> ordersList = new ArrayList<>();
+        
+        try{
+            String sql = "SELECT * from products join orders using (prod_id)";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                Order order = new Order();
+                order.setId(rs.getInt("order_id"));
+                order.setProd_Id(rs.getInt("prod_id"));
+                order.setName(rs.getString("prod_name"));
+                order.setBrand(rs.getString("brand"));
+                order.setBottles(rs.getInt("bottles"));
+                order.setCases(rs.getInt("cases"));
+                order.setSize(rs.getString("size"));
+                order.setDate_received(rs.getString("date_received"));
+                ordersList.add(order);
+            }
+            
+            stmt.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return ordersList;
     }
     
     public Product addProduct(String name, String brand){
