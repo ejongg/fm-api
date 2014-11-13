@@ -23,9 +23,11 @@ public class UserService {
                 User user = new User();
                 user.setId(rs.getInt("user_id"));
                 user.setUserName(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
                 user.setType(rs.getString("type"));
                 user.setFirstName(rs.getString("first_name"));
                 user.setLastName(rs.getString("last_name"));
+                user.setStatus(rs.getString("status"));
                 users.add(user);
             }
         }catch(Exception e){
@@ -47,6 +49,7 @@ public class UserService {
                 user.setType(rs.getString("type"));
                 user.setFirstName(rs.getString("first_name"));
                 user.setLastName(rs.getString("last_name"));
+                user.setStatus(rs.getString("status"));
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -63,9 +66,11 @@ public class UserService {
             while(rs.next()){
                 user.setId(rs.getInt("user_id"));
                 user.setUserName(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
                 user.setType(rs.getString("type"));
                 user.setFirstName(rs.getString("first_name"));
                 user.setLastName(rs.getString("last_name"));
+                user.setStatus(rs.getString("status"));
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -116,7 +121,7 @@ public class UserService {
     public User createUser(User user){
         User createdUser = user;
         try{
-            String sql = "INSERT into users(username, password, type, first_name, last_name) values (?,?,?,?,?)";
+            String sql = "INSERT into users(username, password, type, first_name, last_name, status) values (?,?,?,?,?,?)";
             PreparedStatement stmt = connection.prepareStatement(sql);
             
             String hashedpw = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
@@ -126,6 +131,7 @@ public class UserService {
             stmt.setString(3, user.getType());
             stmt.setString(4, user.getFirstName());
             stmt.setString(5, user.getLastName());
+            stmt.setString(6, "active");
             stmt.execute();
             
             createdUser = getUserByUsername(user.getUserName());
